@@ -54,15 +54,14 @@ const surveyData = [
 
 async function seedDatabase() {
   try {
-    // Connect to MongoDB
+    //To connect to MongoDB
     await mongoose.connect('mongodb://localhost:27017/SurveyAga', { useNewUrlParser: true, useUnifiedTopology: true });
 
-    // Check if the database exists
+    // Check if the database exists, if yes drop it
     const db = mongoose.connection.db;
     const existingCollections = await db.listCollections().toArray();
     const existingCollectionsNames = existingCollections.map(collection => collection.name);
 
-    // Drop existing collections if they exist
     if (existingCollectionsNames.includes('users')) {
       await db.dropCollection('users');
       console.log('Users collection dropped successfully');
@@ -78,21 +77,17 @@ async function seedDatabase() {
       console.log('Surveys collection dropped successfully');
     }
 
-    // Hash passwords before inserting users
     const hashedUserData = await Promise.all(userData.map(async user => ({
       username: user.username,
       password: await bcrypt.hash(user.password, 10)
     })));
 
-    // Insert user data into the database
     await Users.insertMany(hashedUserData);
     console.log('User data inserted successfully');
 
-    // Insert response data into the database
     await Answers.insertMany(answerData);
     console.log('Answer data inserted successfully');
 
-    // Insert survey data into the database, creating them if they don't exist
     await Promise.all(surveyData.map(async survey => {
       const existingSurvey = await Surveys.findOne({ topic: survey.topic });
       if (!existingSurvey) {

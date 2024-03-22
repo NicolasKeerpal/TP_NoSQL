@@ -1,8 +1,6 @@
 const Answer = require('../models/Answers');
 const jwt = require('jsonwebtoken');
 
-
-// Middleware to verify JWT token and extract user id
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -21,35 +19,30 @@ function verifyToken(req, res, next) {
   }
 }
 
-// Controller function to add a response
 async function addAnswer(req, res) {
   try {
-    // Extract data from the request body
     const { answers } = req.body;
     const survey_id = req.params.id;
     
     const user_id = req.user.userId; 
-    console.log('User ID:', user_id); // Log the user ID
 
+    //Check information
+    console.log('User ID:', user_id);
     console.log('Survey ID:', survey_id);
 
 
-    // Validate the required fields
     if (!user_id || !answers || !Array.isArray(answers)) {
       return res.status(400).json({ message: 'Invalid request body' });
     }
 
-    // Create a new response instance
     const answer = new Answer({
       survey_id,
       user_id,
       answers
     });
 
-    // Save the response to the database
     await answer.save();
 
-    // Respond with a success message
     res.status(201).json({ message: 'Answer added successfully' });
   } catch (error) {
     console.error('Error adding Answer:', error);

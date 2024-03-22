@@ -1,6 +1,5 @@
 const Survey = require('../models/Surveys');
 
-// Service function to get a specific Sondage document by ID
 async function getSurveyById(surveyId) {
   try {
     const survey = await Survey.findById(surveyId);
@@ -10,7 +9,6 @@ async function getSurveyById(surveyId) {
   }
 }
 
-// Service function to get all surveys
 async function getAllSurvey() {
   try {
     const surveys = await Survey.find();
@@ -20,12 +18,11 @@ async function getAllSurvey() {
   }
 }
 
-// Service function to add a new survey
 async function addSurvey(topic, questions, userId) {
   try {
     const survey = new Survey({
       topic,
-      creator: userId, // Assign the user id directly here
+      creator: userId,
       questions
     });
 
@@ -38,7 +35,6 @@ async function addSurvey(topic, questions, userId) {
 
 async function deleteSurveyById(surveyId) {
   try {
-    // Find the survey by ID and delete it
     await Survey.findByIdAndDelete(surveyId);
   } catch (error) {
     throw error;
@@ -46,7 +42,6 @@ async function deleteSurveyById(surveyId) {
 }
 
 
-// Service function to update a survey by ID
 async function updateSurvey(id, updatedFields) {
   try {
     const updatedSurvey = await Survey.findByIdAndUpdate(id, updatedFields, { new: true });

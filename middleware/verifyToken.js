@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT token and extract user id
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
 
